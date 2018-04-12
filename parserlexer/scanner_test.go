@@ -6,10 +6,22 @@ import (
 )
 
 func TestReadCharacter(t *testing.T) {
-	snippet := `http {
-  }`
-	rdr := strings.NewReader(snippet)
+	rdr := strings.NewReader(`http {
+  }`)
 	scnr := NewScanner(rdr)
+	rne := scnr.read()
+
+	if string(rne) != "h" {
+		t.Error("Rune mismatch")
+	}
+}
+
+func TestUnreadCharacter(t *testing.T) {
+	rdr := strings.NewReader(`http {
+  }`)
+	scnr := NewScanner(rdr)
+	scnr.read()
+	scnr.unread()
 	rne := scnr.read()
 
 	if string(rne) != "h" {

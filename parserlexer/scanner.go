@@ -21,3 +21,7 @@ func (scnr *Scanner) read() rune {
 	}
 	return ch
 }
+
+func (scnr *Scanner) unread() {
+	scnr.rdr.UnreadRune()
+}
