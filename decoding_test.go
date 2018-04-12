@@ -18,8 +18,10 @@ func TestDecode(t *testing.T) {
   }
   `)
 	var nginxConf NginxConf
+
 	dec := NewDecoder(nginxConfStr)
 	err := dec.Decode(&nginxConf)
+
 	firstDirective := nginxConf.Directives[0]
 	if err != nil {
 		t.Error(err)
