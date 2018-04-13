@@ -2,8 +2,16 @@ package parserlexer
 
 import (
 	"bytes"
-	"log"
 	"strings"
+)
+
+const (
+	HTTP Token = iota // http directive
+	IDENT
+	ILLEGAL
+	EOF
+	WS
+	OPEN_BRACE
 )
 
 type Scanner struct {
@@ -16,19 +24,19 @@ func NewScanner(confRdr *strings.Reader) *Scanner {
 
 func (scnr *Scanner) Scan() (Token, string) {
 	ch := scnr.read()
-	// // detect if the next rune in the buffer is a whitespace or non-whitespace char
-	// if isWhitespace(ch) {
-	// 	// consume all whitespace and tokenize
-	// 	scnr.unread()
-	// 	return scnr.scanWhitespace()
-	// }
 	if isAlpha(ch) {
 		scnr.unread()
 		return scnr.scanIdent()
 	}
+	if isWhitespace(ch) {
+		scnr.unread()
+		return scnr.scanWhitespace()
+	}
 	switch ch {
 	case rune(0):
 		return EOF, ""
+	case '{':
+		return OPEN_BRACE, "{"
 	}
 	return ILLEGAL, string(ch)
 }
@@ -37,8 +45,7 @@ func (scnr *Scanner) Scan() (Token, string) {
 func (scnr *Scanner) read() rune {
 	ch, _, err := scnr.rdr.ReadRune()
 	if err != nil {
-		log.Print(err)
-		panic(err)
+		return rune(0)
 	}
 	return ch
 }
@@ -50,10 +57,11 @@ func (scnr *Scanner) unread() {
 func (scnr *Scanner) scanIdent() (Token, string) {
 	var buf bytes.Buffer
 	for {
-		ch := scnr.read()
-		if ch != rune(0) || !isWhitespace(ch) {
+		if ch := scnr.read(); ch == rune(0) {
+			break
+		} else if !isWhitespace(ch) {
 			buf.WriteRune(ch)
-		} else {
+		} else if isWhitespace(ch) {
 			scnr.unread()
 			break
 		}
@@ -63,6 +71,21 @@ func (scnr *Scanner) scanIdent() (Token, string) {
 		return HTTP, buf.String()
 	}
 	return IDENT, buf.String()
+}
+
+func (scnr *Scanner) scanWhitespace() (Token, string) {
+	var buf bytes.Buffer
+	for {
+		if ch := scnr.read(); ch == rune(0) {
+			break
+		} else if !isWhitespace(ch) {
+			scnr.unread()
+			break
+		} else {
+			buf.WriteRune(ch)
+		}
+	}
+	return WS, buf.String()
 }
 
 // Utility Fns

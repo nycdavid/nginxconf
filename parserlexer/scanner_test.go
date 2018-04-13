@@ -29,9 +29,37 @@ func TestUnreadCharacter(t *testing.T) {
 	}
 }
 
-func TestReadHttp(t *testing.T) {
+func TestReadFirstToken(t *testing.T) {
+	rdr := strings.NewReader(`http {
+  }`)
+	scnr := NewScanner(rdr)
+	tok, _ := scnr.Scan()
+	if tok != HTTP {
+		t.Error("Token mismatch")
+	}
+}
+
+func TestReadWhitespaceToken(t *testing.T) {
 	rdr := strings.NewReader(`http {
   }`)
 	scnr := NewScanner(rdr)
 	scnr.Scan()
+	tok, _ := scnr.Scan()
+
+	if tok != WS {
+		t.Error("Token mismatch")
+	}
+}
+
+func TestReadOpenBraceToken(t *testing.T) {
+	rdr := strings.NewReader(`http {
+  }`)
+	scnr := NewScanner(rdr)
+	scnr.Scan()
+	scnr.Scan()
+	tok, _ := scnr.Scan()
+
+	if tok != OPEN_BRACE {
+		t.Error("Token mismatch")
+	}
 }
