@@ -13,6 +13,7 @@ const (
 	WS
 	OPEN_BRACE
 	CLOSE_BRACE
+	LOCATION
 )
 
 type Scanner struct {
@@ -72,6 +73,8 @@ func (scnr *Scanner) scanIdent() (Token, string) {
 	switch strings.ToLower(buf.String()) {
 	case "http":
 		return HTTP, buf.String()
+	case "location":
+		return LOCATION, buf.String()
 	}
 	return IDENT, buf.String()
 }

@@ -91,3 +91,19 @@ func TestReadCloseBraceToken(t *testing.T) {
 		t.Error("Token mismatch")
 	}
 }
+
+func TestReadLocationToken(t *testing.T) {
+	rdr := strings.NewReader(`http {
+    location / {
+    }
+  }`)
+	scnr := NewScanner(rdr)
+	for i := 0; i < 4; i++ {
+		scnr.Scan()
+	}
+	tok, _ := scnr.Scan()
+
+	if tok != LOCATION {
+		t.Error("Token mismatch")
+	}
+}
