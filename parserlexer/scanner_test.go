@@ -63,3 +63,31 @@ func TestReadOpenBraceToken(t *testing.T) {
 		t.Error("Token mismatch")
 	}
 }
+
+func TestReadNewlineToken(t *testing.T) {
+	rdr := strings.NewReader(`http {
+  }`)
+	scnr := NewScanner(rdr)
+	for i := 0; i < 3; i++ {
+		scnr.Scan()
+	}
+	tok, _ := scnr.Scan()
+
+	if tok != WS {
+		t.Error("Token mismatch")
+	}
+}
+
+func TestReadCloseBraceToken(t *testing.T) {
+	rdr := strings.NewReader(`http {
+  }`)
+	scnr := NewScanner(rdr)
+	for i := 0; i < 4; i++ {
+		scnr.Scan()
+	}
+	tok, _ := scnr.Scan()
+
+	if tok != CLOSE_BRACE {
+		t.Error("Token mismatch")
+	}
+}

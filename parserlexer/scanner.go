@@ -12,6 +12,7 @@ const (
 	EOF
 	WS
 	OPEN_BRACE
+	CLOSE_BRACE
 )
 
 type Scanner struct {
@@ -37,6 +38,8 @@ func (scnr *Scanner) Scan() (Token, string) {
 		return EOF, ""
 	case '{':
 		return OPEN_BRACE, "{"
+	case '}':
+		return CLOSE_BRACE, "}"
 	}
 	return ILLEGAL, string(ch)
 }
