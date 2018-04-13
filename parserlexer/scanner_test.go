@@ -20,11 +20,18 @@ func TestUnreadCharacter(t *testing.T) {
 	rdr := strings.NewReader(`http {
   }`)
 	scnr := NewScanner(rdr)
-	scnr.read()
-	scnr.unread()
-	rne := scnr.read()
+	scnr.read()        // Read 1st char
+	scnr.unread()      // Put it back
+	rne := scnr.read() // Read it again
 
 	if string(rne) != "h" {
 		t.Error("Rune mismatch")
 	}
+}
+
+func TestReadHttp(t *testing.T) {
+	rdr := strings.NewReader(`http {
+  }`)
+	scnr := NewScanner(rdr)
+	scnr.Scan()
 }
