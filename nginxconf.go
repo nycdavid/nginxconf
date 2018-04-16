@@ -1,6 +1,7 @@
 package nginxconf
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"strings"
@@ -18,4 +19,8 @@ func NewNginxConf(routes *strings.Reader) *NginxConf {
 		log.Print(err)
 	}
 	return &conf
+}
+
+func (conf *NginxConf) WriteTo(buf *bytes.Buffer) {
+	buf.WriteString("foo")
 }
