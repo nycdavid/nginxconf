@@ -1,10 +1,6 @@
 {
   "routes": [
-    {
-      "location": "/google", "proxy_pass": "http://www.google.com"
-    },
-    {
-      "location": "/elasticsearch", "proxy_pass": "http://www.elastic.co"
-    }
+    { "location": "/google", "proxy_pass": "http://www.google.com" },
+    { "location": "/elasticsearch", "proxy_pass": "http://www.elastic.co" }
   ]
 }
