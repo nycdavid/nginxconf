@@ -12,7 +12,7 @@ func TestParseLexingHttpIdent(t *testing.T) {
 	directives := New(confRdr)
 	directive := directives[0]
 
-	if directive.Type != "http" {
+	if directive.Type != "http" || directive.Tkn != HTTP {
 		errMsg := fmt.Sprintf("Expected type %s, got %s", "http", directive.Type)
 		t.Error(errMsg)
 	}
