@@ -13,5 +13,6 @@ type NginxAST struct {
 }
 
 func New(conf string) *NginxAST {
+
 	return &NginxAST{}
 }
