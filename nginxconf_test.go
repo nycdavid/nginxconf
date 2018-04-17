@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/velvetreactor/nginxconf/parserlexer"
 )
 
 func TestIngestRoutesFile(t *testing.T) {
@@ -35,7 +37,18 @@ func TestWriteTo(t *testing.T) {
 
 	nginxConf.WriteTo(&buf)
 
-	if buf.String() != "http" {
-		t.Error("Incorrect format")
+	rdr := strings.NewReader(buf.String())
+	scnr := parserlexer.NewScanner(rdr)
+	var tokens []*parserlexer.Token
+	for {
+		if tok := scnr.Scan(); tok.Type != parserlexer.EOF {
+			tokens = append(tokens, tok)
+		} else {
+			break
+		}
+	}
+
+	if len(tokens) != 31 {
+		t.Error("Missing tokens")
 	}
 }

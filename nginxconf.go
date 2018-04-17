@@ -26,4 +26,16 @@ func NewNginxConf(routes *strings.Reader) *NginxConf {
 func (conf *NginxConf) WriteTo(buf *bytes.Buffer) {
 	httpTok := &parserlexer.Token{Type: parserlexer.HTTP, String: "http"}
 	buf.WriteString(httpTok.String)
+	buf.WriteString(" {")
+
+	for _, route := range conf.Routes {
+		buf.WriteString(" location ")
+		buf.WriteString(route["location"])
+		buf.WriteString(" { ")
+		buf.WriteString(" proxy_pass ")
+		buf.WriteString(route["proxy_pass"])
+		buf.WriteString(" } ")
+	}
+
+	buf.WriteString(" }")
 }
