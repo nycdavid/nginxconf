@@ -33,8 +33,8 @@ func TestReadFirstToken(t *testing.T) {
 	rdr := strings.NewReader(`http {
   }`)
 	scnr := NewScanner(rdr)
-	tok, _ := scnr.Scan()
-	if tok != HTTP {
+	token := scnr.Scan()
+	if token.Type != HTTP || token.String != "http" {
 		t.Error("Token mismatch")
 	}
 }
@@ -44,9 +44,9 @@ func TestReadWhitespaceToken(t *testing.T) {
   }`)
 	scnr := NewScanner(rdr)
 	scnr.Scan()
-	tok, _ := scnr.Scan()
+	tok := scnr.Scan()
 
-	if tok != WS {
+	if tok.Type != WS {
 		t.Error("Token mismatch")
 	}
 }
@@ -57,9 +57,9 @@ func TestReadOpenBraceToken(t *testing.T) {
 	scnr := NewScanner(rdr)
 	scnr.Scan()
 	scnr.Scan()
-	tok, _ := scnr.Scan()
+	tok := scnr.Scan()
 
-	if tok != OPEN_BRACE {
+	if tok.Type != OPEN_BRACE {
 		t.Error("Token mismatch")
 	}
 }
@@ -71,9 +71,9 @@ func TestReadNewlineToken(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		scnr.Scan()
 	}
-	tok, _ := scnr.Scan()
+	tok := scnr.Scan()
 
-	if tok != WS {
+	if tok.Type != WS {
 		t.Error("Token mismatch")
 	}
 }
@@ -85,9 +85,9 @@ func TestReadCloseBraceToken(t *testing.T) {
 	for i := 0; i < 4; i++ {
 		scnr.Scan()
 	}
-	tok, _ := scnr.Scan()
+	tok := scnr.Scan()
 
-	if tok != CLOSE_BRACE {
+	if tok.Type != CLOSE_BRACE {
 		t.Error("Token mismatch")
 	}
 }
@@ -101,9 +101,9 @@ func TestReadLocationToken(t *testing.T) {
 	for i := 0; i < 4; i++ {
 		scnr.Scan()
 	}
-	tok, _ := scnr.Scan()
+	tok := scnr.Scan()
 
-	if tok != LOCATION {
+	if tok.Type != LOCATION {
 		t.Error("Token mismatch")
 	}
 }

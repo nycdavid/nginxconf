@@ -35,7 +35,7 @@ func TestWriteTo(t *testing.T) {
 
 	nginxConf.WriteTo(&buf)
 
-	if buf.String() != "htp" {
+	if buf.String() != "http" {
 		t.Error("Incorrect format")
 	}
 }

@@ -4,19 +4,12 @@ import (
 	"strings"
 )
 
-type Token int
-
-type Directive struct {
-	Tkn  Token
-	Type string
-}
-
-func New(confRdr *strings.Reader) []*Directive {
+func New(confRdr *strings.Reader) []*Token {
 	scnr := NewScanner(confRdr)
-	var directives []*Directive
+	var directives []*Token
 	for {
-		if tok, tokStr := scnr.Scan(); tok != EOF {
-			directives = append(directives, &Directive{Tkn: tok, Type: tokStr})
+		if tok := scnr.Scan(); tok.Type != EOF {
+			directives = append(directives, tok)
 		} else {
 			break
 		}

@@ -5,8 +5,10 @@ import (
 	"strings"
 )
 
+type Construct int
+
 const (
-	HTTP Token = iota // http directive
+	HTTP Construct = iota // http directive
 	IDENT
 	ILLEGAL
 	EOF
@@ -16,6 +18,11 @@ const (
 	LOCATION
 )
 
+type Token struct {
+	Type   Construct
+	String string
+}
+
 type Scanner struct {
 	rdr *strings.Reader
 }
@@ -24,7 +31,7 @@ func NewScanner(confRdr *strings.Reader) *Scanner {
 	return &Scanner{rdr: confRdr}
 }
 
-func (scnr *Scanner) Scan() (Token, string) {
+func (scnr *Scanner) Scan() *Token {
 	ch := scnr.read()
 	if isAlpha(ch) {
 		scnr.unread()
@@ -36,13 +43,13 @@ func (scnr *Scanner) Scan() (Token, string) {
 	}
 	switch ch {
 	case rune(0):
-		return EOF, ""
+		return &Token{Type: EOF, String: ""}
 	case '{':
-		return OPEN_BRACE, "{"
+		return &Token{Type: OPEN_BRACE, String: "{"}
 	case '}':
-		return CLOSE_BRACE, "}"
+		return &Token{Type: CLOSE_BRACE, String: "}"}
 	}
-	return ILLEGAL, string(ch)
+	return &Token{Type: ILLEGAL, String: string(ch)}
 }
 
 // Private
@@ -58,7 +65,7 @@ func (scnr *Scanner) unread() {
 	scnr.rdr.UnreadRune()
 }
 
-func (scnr *Scanner) scanIdent() (Token, string) {
+func (scnr *Scanner) scanIdent() *Token {
 	var buf bytes.Buffer
 	for {
 		if ch := scnr.read(); ch == rune(0) {
@@ -72,14 +79,14 @@ func (scnr *Scanner) scanIdent() (Token, string) {
 	}
 	switch strings.ToLower(buf.String()) {
 	case "http":
-		return HTTP, buf.String()
+		return &Token{Type: HTTP, String: buf.String()}
 	case "location":
-		return LOCATION, buf.String()
+		return &Token{Type: LOCATION, String: buf.String()}
 	}
-	return IDENT, buf.String()
+	return &Token{Type: IDENT, String: buf.String()}
 }
 
-func (scnr *Scanner) scanWhitespace() (Token, string) {
+func (scnr *Scanner) scanWhitespace() *Token {
 	var buf bytes.Buffer
 	for {
 		if ch := scnr.read(); ch == rune(0) {
@@ -91,7 +98,7 @@ func (scnr *Scanner) scanWhitespace() (Token, string) {
 			buf.WriteRune(ch)
 		}
 	}
-	return WS, buf.String()
+	return &Token{Type: WS, String: buf.String()}
 }
 
 // Utility Fns

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"log"
 	"strings"
+
+	"github.com/velvetreactor/nginxconf/parserlexer"
 )
 
 type NginxConf struct {
@@ -22,5 +24,6 @@ func NewNginxConf(routes *strings.Reader) *NginxConf {
 }
 
 func (conf *NginxConf) WriteTo(buf *bytes.Buffer) {
-	buf.WriteString("foo")
+	httpTok := &parserlexer.Token{Type: parserlexer.HTTP, String: "http"}
+	buf.WriteString(httpTok.String)
 }
