@@ -44,8 +44,9 @@ func TestWriteTo(t *testing.T) {
 	nginxConf := NewNginxConf(routesRdr)
 
 	nginxConf.WriteTo(&buf)
+	written := buf.String()
 
-	rdr := strings.NewReader(buf.String())
+	rdr := strings.NewReader(written)
 	scnr := parserlexer.NewScanner(rdr)
 	var tokens []*parserlexer.Token
 	for {
@@ -56,8 +57,19 @@ func TestWriteTo(t *testing.T) {
 		}
 	}
 
-	if len(tokens) != 43 {
-		errMsg := fmt.Sprintf("Expected %d tokens, got %d", 31, len(tokens))
-		t.Error(errMsg)
+	directives := []string{"server", "location", "proxy_pass"}
+	endpts := []string{"location /google", "location /elastic"}
+	proxies := []string{
+		"proxy_pass http://www.elastic.co;",
+		"proxy_pass http://www.google.com;",
+	}
+	assertions := append(directives, endpts...)
+	assertions = append(assertions, proxies...)
+
+	for _, assertion := range assertions {
+		if !strings.Contains(written, assertion) {
+			errMsg := fmt.Sprintf("Expected string %s", assertion)
+			t.Error(errMsg)
+		}
 	}
 }
