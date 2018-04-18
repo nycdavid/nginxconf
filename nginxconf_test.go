@@ -29,8 +29,16 @@ func TestWriteTo(t *testing.T) {
 	var buf bytes.Buffer
 	routesRdr := strings.NewReader(`{
     "routes": [
-      { "location": "/google", "proxy_pass": "http://www.google.com" },
-      { "location": "/elasticsearch", "proxy_pass": "http://www.elastic.co" }
+			{
+				"host_endpoint": "/google",
+				"proxy_to": "http://www.google.com",
+				"rewrite": true
+			},
+			{
+				"host_endpoint": "/elastic",
+				"proxy_to": "http://www.elastic.co",
+				"rewrite": true
+			}
     ]
   }`)
 	nginxConf := NewNginxConf(routesRdr)
@@ -48,7 +56,8 @@ func TestWriteTo(t *testing.T) {
 		}
 	}
 
-	if len(tokens) != 31 {
-		t.Error("Missing tokens")
+	if len(tokens) != 43 {
+		errMsg := fmt.Sprintf("Expected %d tokens, got %d", 31, len(tokens))
+		t.Error(errMsg)
 	}
 }
