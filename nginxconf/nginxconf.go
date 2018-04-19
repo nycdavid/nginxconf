@@ -1,10 +1,9 @@
 package nginxconf
 
 import (
-	"bytes"
 	"encoding/json"
+	"io"
 	"log"
-	"strings"
 	"text/template"
 )
 
@@ -30,7 +29,7 @@ type Route struct {
 	Rewrite      bool   `json:"rewrite"`
 }
 
-func NewNginxConf(routes *strings.Reader) *NginxConf {
+func New(routes io.Reader) *NginxConf {
 	var conf NginxConf
 	dec := json.NewDecoder(routes)
 	err := dec.Decode(&conf)
@@ -40,7 +39,7 @@ func NewNginxConf(routes *strings.Reader) *NginxConf {
 	return &conf
 }
 
-func (conf *NginxConf) WriteTo(buf *bytes.Buffer) {
+func (conf *NginxConf) WriteTo(buf io.Writer) {
 	tmpl := template.New("nginxConf")
 	tmpl.Parse(confTmpl)
 	err := tmpl.Execute(buf, conf)
