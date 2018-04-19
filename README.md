@@ -25,3 +25,7 @@
     * Request made to `http://HOST/peterlugers` redirects to `http://www.yelp.com/peterlugers`
   * Ex: `{ "rewrite": false, "host_endpoint": "/google/search_engine", "proxy_to": "http://www.google.com" }`
     * Request made to `http://HOST/google/search_engine` redirects to `http://www.google.com`
+
+### Usage
+* Run `go run main.go [input file]`
+* The generated conf file will be output to `test.conf` in your working directory
