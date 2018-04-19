@@ -16,7 +16,7 @@ func TestIngestRoutesFile(t *testing.T) {
       { "location": "/elasticsearch", "proxy_pass": "http://www.elastic.co" }
     ]
   }`)
-	nginxConf := NewNginxConf(routesRdr)
+	nginxConf := New(routesRdr)
 
 	routesCt := len(nginxConf.Routes)
 	if routesCt != 2 {
@@ -41,7 +41,7 @@ func TestWriteTo(t *testing.T) {
 			}
     ]
   }`)
-	nginxConf := NewNginxConf(routesRdr)
+	nginxConf := New(routesRdr)
 
 	nginxConf.WriteTo(&buf)
 	written := buf.String()
