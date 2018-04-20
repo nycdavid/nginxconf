@@ -7,13 +7,22 @@ import (
 	"text/template"
 )
 
-const confTmpl = `http {
+const confTmpl = `worker_processes 5;
+worker_rlimit_nofile 8192;
+
+events {
+	worker_connections 4096;
+}
+
+http {
 	server {
 		listen 80;
 		{{range .Routes -}}
 		location {{.HostEndpoint}} {
-			{{- if .Rewrite}}
-			rewrite ^{{.HostEndpoint}}/(.*)$ /$1 break;
+			{{- if .AppendPath}}
+			rewrite ^/(.*)$ /$1 break;
+			{{else}}
+			rewrite ^/(.*)$ / break;
 			{{- end}}
 			proxy_pass {{.ProxyTo}};
 		}
@@ -28,7 +37,7 @@ type NginxConf struct {
 type Route struct {
 	HostEndpoint string `json:"host_endpoint"`
 	ProxyTo      string `json:"proxy_to"`
-	Rewrite      bool   `json:"rewrite"`
+	AppendPath   bool   `json:"append_path"`
 }
 
 func New(routes io.Reader) *NginxConf {

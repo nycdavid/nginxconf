@@ -74,13 +74,13 @@ func TestWriteTo(t *testing.T) {
 	}
 }
 
-func TestConditionalRewrite(t *testing.T) {
+func TestRewriteAppendPathTrue(t *testing.T) {
 	routes := strings.NewReader(`{
 		"routes": [
 			{
 				"host_endpoint": "/google",
 				"proxy_to": "http://www.google.com",
-				"rewrite": false
+				"append_path": true
 			}
 		]
 	}`)
@@ -89,7 +89,27 @@ func TestConditionalRewrite(t *testing.T) {
 	conf.WriteTo(&buf)
 	written := buf.String()
 
-	if strings.Contains(written, "rewrite") {
-		t.Error("Unexpected \"rewrite\" directive")
+	if !strings.Contains(written, "rewrite ^/(.*)$ /$1 break;") {
+		t.Error("Expected rewrite to append path")
+	}
+}
+
+func TestRewriteAppendPathFalse(t *testing.T) {
+	routes := strings.NewReader(`{
+		"routes": [
+			{
+				"host_endpoint": "/google",
+				"proxy_to": "http://www.google.com",
+				"append_path": false
+			}
+		]
+	}`)
+	conf := New(routes)
+	var buf bytes.Buffer
+	conf.WriteTo(&buf)
+	written := buf.String()
+
+	if !strings.Contains(written, "rewrite ^/(.*)$ / break;") {
+		t.Error("Expected rewrite not to append path")
 	}
 }
