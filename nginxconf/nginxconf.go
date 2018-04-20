@@ -12,7 +12,9 @@ const confTmpl = `http {
 		listen 80;
 		{{range .Routes}}
 		location {{.HostEndpoint}} {
+			{{if .Rewrite}}
 			rewrite ^{{.HostEndpoint}}/(.*)$ /$1 break;
+			{{end}}
 			proxy_pass {{.ProxyTo}};
 		}
 		{{end}}

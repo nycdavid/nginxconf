@@ -73,3 +73,23 @@ func TestWriteTo(t *testing.T) {
 		}
 	}
 }
+
+func TestConditionalRewrite(t *testing.T) {
+	routes := strings.NewReader(`{
+		"routes": [
+			{
+				"host_endpoint": "/google",
+				"proxy_to": "http://www.google.com",
+				"rewrite": false
+			}
+		]
+	}`)
+	conf := New(routes)
+	var buf bytes.Buffer
+	conf.WriteTo(&buf)
+	written := buf.String()
+
+	if strings.Contains(written, "rewrite") {
+		t.Error("Unexpected \"rewrite\" directive")
+	}
+}
