@@ -10,14 +10,14 @@ import (
 const confTmpl = `http {
 	server {
 		listen 80;
-		{{range .Routes}}
+		{{range .Routes -}}
 		location {{.HostEndpoint}} {
-			{{if .Rewrite}}
+			{{- if .Rewrite}}
 			rewrite ^{{.HostEndpoint}}/(.*)$ /$1 break;
-			{{end}}
+			{{- end}}
 			proxy_pass {{.ProxyTo}};
 		}
-		{{end}}
+		{{- end}}
 	}
 }`
 
